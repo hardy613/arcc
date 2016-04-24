@@ -1,3 +1,8 @@
+/**
+ * @file: basic set up for BT conntection with my phone
+ *        I would like to add a WiiMote in the future
+ *        
+ */
 #include <SoftwareSerial.h>
 #define rxPin 4
 #define txPin 2

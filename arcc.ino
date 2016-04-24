@@ -59,8 +59,6 @@ void loop()
     
     Serial.println(blueToothVal);
     
-//    dataTransferUI();
-    
     blueToothVal = NULL;
   }
 
@@ -69,29 +67,21 @@ void loop()
     Serial.print("Captured Message: ");
     
     Serial.println(blueToothMessage);
+
+    Serial.print("Captured Message Length: ");
+    
+    Serial.println(blueToothMessage.length());
+
+    Serial.println(" ");
+
+    Serial.println(" ");
     
     blueToothMessage = "";
   }
-  
-  delay(500);
-}
 
-/**
- * blinks the LED that should be in the pin
- * ledPin
- * 
- * @uses #define ledPin
- */
-void dataTransferUI()
-{
-    digitalWrite(ledPin, HIGH);
-    
-    delay(25);
-    
-    digitalWrite(ledPin, LOW);
-    
-    delay(75);
+  //we can get 2 char from our connection with this
+  //if we remove it we can sometimes only get one char
+  delay(5);
 }
-
 
 

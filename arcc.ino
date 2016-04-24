@@ -59,7 +59,7 @@ void loop()
     
     Serial.println(blueToothVal);
     
-    dataTransferUI();
+//    dataTransferUI();
     
     blueToothVal = NULL;
   }
@@ -73,7 +73,7 @@ void loop()
     blueToothMessage = "";
   }
   
-  delay(1000);
+  delay(500);
 }
 
 /**
@@ -86,11 +86,11 @@ void dataTransferUI()
 {
     digitalWrite(ledPin, HIGH);
     
-    delay(100);
+    delay(25);
     
     digitalWrite(ledPin, LOW);
     
-    delay(50);
+    delay(75);
 }
 
 

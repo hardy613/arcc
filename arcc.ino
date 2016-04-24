@@ -1,5 +1,5 @@
 /**
- * @file: basic set up for BT conntection with my phone
+ * @file: basic set up for BT connection with my phone
  *        I would like to add a WiiMote in the future
  *        
  */

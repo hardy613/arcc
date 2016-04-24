@@ -73,7 +73,7 @@ void loop()
     blueToothMessage = "";
   }
   
-  delay(1000);
+  delay(500);
 }
 
 /**
@@ -84,8 +84,8 @@ void loop()
  */
 void dataTransferUI()
 {
-   digitalWrite(ledPin, HIGH);
-
+    digitalWrite(ledPin, HIGH);
+    
     delay(100);
     
     digitalWrite(ledPin, LOW);

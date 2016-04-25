@@ -19,12 +19,13 @@ char blueToothVal;
 String blueToothMessage;
 
 //setting this up allows us to send updates to the
-//board without having to remove and wires.
+//board without having to remove wires.
 SoftwareSerial blueTooth(rxPin, txPin);
 
 /**
-
-*/
+ * Set our serial and bluetooth buad rates
+ * Set the RX and TX pins for bluetooth comms
+ */
 void setup()
 {
   Serial.begin(baudRate);
@@ -38,9 +39,6 @@ void setup()
   Serial.println("Starting: ...");
 }
 
-/**
-
-*/
 void loop()
 {
   Serial.flush();

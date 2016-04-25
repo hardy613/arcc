@@ -51,7 +51,7 @@ void loop()
   
   while(blueTooth.available()) 
   {    
-    blueToothVal = blueTooth.read(); //read it
+    blueToothVal = blueTooth.read();
   
     blueToothMessage += blueToothVal;
     

@@ -10,8 +10,6 @@
 
 #define txPin 2
 
-#define ledPin 13
-
 #define baudRate 115200
 
 SoftwareSerial blueTooth(rxPin, txPin);
@@ -33,8 +31,6 @@ void setup()
  
  pinMode(txPin, OUTPUT);
  
- pinMode(ledPin, OUTPUT); 
- 
  Serial.println("Starting: ...");
 }
  
@@ -50,7 +46,7 @@ void loop()
   if (!blueTooth.available()) return;
   
   while(blueTooth.available()) 
-  {
+  {    
     blueToothVal = blueTooth.read(); //read it
   
     blueToothMessage += blueToothVal;

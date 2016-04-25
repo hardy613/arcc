@@ -1,22 +1,26 @@
+#include <SoftwareSerial.h>
 /**
  * @file: basic set up for blueTooth connection with my phone
  *        I would like to add a WiiMote in the future
- *        
+ *        The module we are connecting to is an HC-06 BlueTooth chip;
+ *        right now we are just reading the data we send it, just need a
+ *        steering wheel (hence wiimote).
  */
-
-#include <SoftwareSerial.h>
 
 #define rxPin 4
 
 #define txPin 2
 
+//AT+BUAD8
 #define baudRate 115200
-
-SoftwareSerial blueTooth(rxPin, txPin);
 
 char blueToothVal;
 
 String blueToothMessage;
+
+//setting this up allows us to send updates to the
+//board without having to remove and wires.
+SoftwareSerial blueTooth(rxPin, txPin);
 
 /**
  * 

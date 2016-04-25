@@ -1,11 +1,14 @@
 #include <SoftwareSerial.h>
 /**
-   @file: basic set up for blueTooth connection with my phone
-          I would like to add a WiiMote in the future
-          The module we are connecting to is an HC-06 BlueTooth chip;
-          right now we are just reading the data we send it, just need a
-          steering wheel (hence wiimote).
-*/
+ *  @file:  basic set up for blueTooth connection with my phone
+ *          I would like to add a WiiMote in the future 
+ *          right now we are just reading the data we send it, 
+ *          just need a steering wheel (hence wiimote).
+ *          
+ *  @uses:  HC-06 BlueTooth Module
+ *          Adriod phone (Nexus 5x) 
+ *         
+ */
 
 #define rxPin 4
 

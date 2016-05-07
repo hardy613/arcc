@@ -10,10 +10,10 @@
 
 */
 //bluetooth connection
-#define rxPin 4           //bluetooth tx pin
-#define txPin 2           //bluetooth rx pin
-#define bluetoothStatePin 7  //bluetooth state pin
-#define baudRate 115200   //AT+BUAD8 ammount of data we can pass
+#define rxPin 4               //bluetooth tx pin
+#define txPin 2               //bluetooth rx pin
+#define bluetoothStatePin 7   //bluetooth state pin
+#define baudRate 115200       //AT+BUAD8 ammount of data we can pass
 
 //L293D Connection
 #define steeringMotor1 10 //L293D pin 10
@@ -54,7 +54,6 @@ void setup()
 void loop()
 {
   Serial.flush();
-  blueTooth.flush();
 
   if (digitalRead(bluetoothStatePin) == LOW)
   {//bluetooth connection lost
@@ -74,7 +73,10 @@ void loop()
       Serial.print("Captured Char: ");
       Serial.println(blueToothVal);
     }
-  
+    
+    //clear the data for the next cycle
+    blueTooth.flush();
+    
     if (blueToothVal == "L") 
     {//left
         analogWrite(steeringMotor1, 200);  

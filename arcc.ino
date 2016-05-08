@@ -55,14 +55,16 @@ void loop()
 {
   Serial.flush();
 //Uncomment below once we've connected the bluetooth state pin
-//  if (digitalRead(bluetoothStatePin) == LOW)
-//  {//bluetooth connection lost
-//    Serial.print("Connection Lost: ");
-//    Serial.println(digitalRead(bluetoothStatePin));
-//    allStopARCC();
-//  }
-//  else
-//  {//we're connected    
+  if (digitalRead(bluetoothStatePin) == LOW)
+  {//bluetooth connection lost
+    Serial.print("Connection Lost: ");
+    Serial.println(digitalRead(bluetoothStatePin));
+    blueTooth.flush();
+    blueToothVal = 'S';
+    allStopARCC();
+  }
+  else
+  {//we're connected    
     if (blueTooth.available())
     {
       blueToothVal = char(blueTooth.read());
@@ -106,7 +108,7 @@ void loop()
     {
       allStopARCC();
     }
-  //}
+  }
   //we can get 2 char from our connection with this
   //if we remove it we can sometimes only get one char
   delay(50);

@@ -1,3 +1,4 @@
+#include <Wii.h>
 #include <SoftwareSerial.h>
 /**
     @file:  basic set up for blueTooth connection with my phone
@@ -12,7 +13,7 @@
 //bluetooth connection
 #define rxPin 4               //bluetooth tx pin
 #define txPin 2               //bluetooth rx pin
-#define bluetoothStatePin 7   //bluetooth state pin
+#define bluetoothStatePin 3   //bluetooth state pin
 #define baudRate 115200       //AT+BUAD8 ammount of data we can pass
 
 //L293D Connection
@@ -52,29 +53,27 @@ void setup()
 }
 
 void loop()
-{
-  Serial.flush();
-  
-  if (digitalRead(bluetoothStatePin) == LOW)
+{  
+  if (digitalRead(bluetoothStatePin) == LOW)//this is reading wrong? always HIGH
   {//bluetooth connection lost
-    Serial.print("Connection Lost: ");
-    Serial.println(digitalRead(bluetoothStatePin));
     blueTooth.flush();
     blueToothVal = 'S';
     allStopARCC();
   }
   else
-  {//we're connected    
-    if (blueTooth.available())
+  {//we're connected   
+
+     
+    while (blueTooth.available())
     {
-      blueToothVal = char(blueTooth.read());
+      blueToothVal = blueTooth.read();
   
       Serial.print("Captured Char: ");
       Serial.println(blueToothVal);
+
+      //clear the data for the next cycle
+//      blueTooth.flush();
     }
-    
-    //clear the data for the next cycle
-    blueTooth.flush();
     
     if (blueToothVal == "L") 
     {//left

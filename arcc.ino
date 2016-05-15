@@ -13,31 +13,27 @@
 
 */
 //bluetooth connection
+const long baudRate = 115200;      //AT+BUAD8 ammount of data we can pass
 const int rxPin = 4;               //bluetooth tx pin
 const int txPin = 2;               //bluetooth rx pin
 const int bluetoothStatePin = 11;  //bluetooth state pin
-const long baudRate = 115200;       //AT+BUAD8 ammount of data we can pass
-
-//L293D Connection
-const int steeringMotor1 = 10; //L293D pin 10
-const int steeringMotor2 = 9;  //L293D pin 14
-const int driveMotor1 = 5;     //L293D pin 2
-const int driveMotor2 = 6;     //L293D pin 7
-
+//Arcc
+const int steeringMotorLeft = 10; 
+const int steeringMotorRight = 9;  
+const int driveMotorForward = 5;     
+const int driveMotorBackward = 6;     
 //PING)))
 const int echoPin = 8;
 const int trigPin = 7;
-
 //bluetooth data
 String blueToothVal;
-
-//insurance, insurance 
-const int safeDisitanceInches = 4;
-
+//PING))) safe distance, try to save the car from crashing 
+int safeDisitanceInches = 4;
 //setting this up allows us to send updates to the
 //board without having to remove wires.
 SoftwareSerial blueTooth(rxPin, txPin);
-
+//set up the car
+Arcc arcc(steeringMotorLeft, steeringMotorRight, driveMotorForward , driveMotorBackward);
 /**
  * Begin our serial and bluetooth buad rates
  * Set the State, RX and TX pins for bluetooth comms
@@ -49,11 +45,7 @@ void setup()
   pinMode(bluetoothStatePin, INPUT);
   pinMode(rxPin, INPUT);
   pinMode(txPin, OUTPUT);
-  //L293D Pins
-  pinMode(steeringMotor1, OUTPUT);
-  pinMode(steeringMotor2, OUTPUT);
-  pinMode(driveMotor1, OUTPUT);
-  pinMode(driveMotor2, OUTPUT);
+
 
   //HC-SR04
   pinMode(trigPin, OUTPUT);
@@ -90,7 +82,7 @@ void loop()
 //  {//bluetooth connection lost
 //    blueTooth.flush();
 //    blueToothVal = 'S';
-//    allStopARCC();
+//    arcc.allStop();
 //  }
 //  
 //  else
@@ -104,17 +96,17 @@ void loop()
     
     if (blueToothVal == "L") 
     {// left
-        analogWrite(steeringMotor1, 200);  
-        analogWrite(steeringMotor2, 0); 
-        analogWrite(driveMotor1, 0);  
-        analogWrite(driveMotor2, 0);
+        analogWrite(steeringMotorLeft, 200);  
+        analogWrite(steeringMotorRight, 0); 
+        analogWrite(driveMotorForward, 0);  
+        analogWrite(driveMotorBackward, 0);
     } 
     else if (blueToothVal == "R") 
     {// right
-        analogWrite(steeringMotor1, 0);  
-        analogWrite(steeringMotor2, 200); 
-        analogWrite(driveMotor1, 0);  
-        analogWrite(driveMotor2, 0);  
+        analogWrite(steeringMotorLeft, 0);  
+        analogWrite(steeringMotorRight, 200); 
+        analogWrite(driveMotorForward, 0);  
+        analogWrite(driveMotorBackward, 0);  
     }
     else if (blueToothVal == "F") 
     {// forward
@@ -126,40 +118,27 @@ void loop()
           blueTooth.print(cm);
           blueTooth.print("cm");
           blueTooth.println();
-          allStopARCC();
+          arcc.allStop();
         } else {
-          analogWrite(steeringMotor1, 0);  
-          analogWrite(steeringMotor2, 0); 
-          analogWrite(driveMotor1, 200);  
-          analogWrite(driveMotor2, 0);  
+          analogWrite(steeringMotorLeft, 0);  
+          analogWrite(steeringMotorRight, 0); 
+          analogWrite(driveMotorForward, 200);  
+          analogWrite(driveMotorBackward, 0);  
         }
     }
     else if (blueToothVal == "B") 
-    {// forward
-        analogWrite(steeringMotor1, 0);  
-        analogWrite(steeringMotor2, 0); 
-        analogWrite(driveMotor1, 0);  
-        analogWrite(driveMotor2, 200);  
+    {// backward
+        analogWrite(steeringMotorLeft, 0);  
+        analogWrite(steeringMotorRight, 0); 
+        analogWrite(driveMotorForward, 0);  
+        analogWrite(driveMotorBackward, 200);  
     }
     else 
     {
-      allStopARCC();
+      arcc.allStop();
     }
     
 //  }
-}
-
-/**
- * Let's be careful and try to keep the car safe
- * Turns off all motors
- */
-void allStopARCC() 
-{
-  //make it so number 1
-  analogWrite(steeringMotor1, 0);  
-  analogWrite(steeringMotor2, 0); 
-  analogWrite(driveMotor1, 0);  
-  analogWrite(driveMotor2, 0);
 }
 /**
  * THX: https://gist.github.com/flakas

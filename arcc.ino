@@ -1,6 +1,6 @@
 #include <SoftwareSerial.h>
 //my libraries
-#include "Arcc.h"
+#include "libraries/Arcc/Arcc.h"
 /**
     @file:  basic set up for blueTooth connection with my phone
             I would like to add a WiiMote in the future

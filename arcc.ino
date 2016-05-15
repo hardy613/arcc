@@ -1,4 +1,3 @@
-#include <Wii.h>
 #include <SoftwareSerial.h>
 /**
     @file:  basic set up for blueTooth connection with my phone
@@ -6,14 +5,15 @@
             right now we are just reading the data we send it,
             just need a steering wheel (hence wiimote).
 
-    @uses:  HC-06 BlueTooth Module
-            Andriod phone (Nexus 5x)
+    @uses:  HC-06 BlueTooth Module - communication
+            HC-SR04 Sensor - distance sensor
+            Andriod phone (Nexus 5x) - steering wheel
 
 */
 //bluetooth connection
 #define rxPin 4               //bluetooth tx pin
 #define txPin 2               //bluetooth rx pin
-#define bluetoothStatePin 3   //bluetooth state pin
+#define bluetoothStatePin 11  //bluetooth state pin
 #define baudRate 115200       //AT+BUAD8 ammount of data we can pass
 
 //L293D Connection
@@ -22,8 +22,15 @@
 #define driveMotor1 5     //L293D pin 2
 #define driveMotor2 6     //L293D pin 7
 
+//PING)))
+#define echoPin 8
+#define trigPin 7
+
 //bluetooth data
 String blueToothVal;
+
+//insurance, insurance 
+const int safeDisitanceInches = 4;
 
 //setting this up allows us to send updates to the
 //board without having to remove wires.
@@ -54,50 +61,77 @@ void setup()
 
 void loop()
 {  
-  if (digitalRead(bluetoothStatePin) == LOW)//this is reading wrong? always HIGH
-  {//bluetooth connection lost
-    blueTooth.flush();
-    blueToothVal = 'S';
-    allStopARCC();
-  }
-  else
-  {//we're connected   
 
-     
-    while (blueTooth.available())
-    {
-      blueToothVal = blueTooth.read();
+  // establish variables for duration of the ping, 
+  // and the distance result in inches and centimeters:
+  long duration, inches, cm;
+  pinMode(trigPin, OUTPUT);
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
   
+  // Read the signal from the sensor: a HIGH pulse whose
+  // duration is the time (in microseconds) from the sending
+  // of the ping to the reception of its echo off of an object.
+  pinMode(echoPin, INPUT);
+  duration = pulseIn(echoPin, HIGH);
+  
+  // convert the time into a distance
+  inches = microsecondsToInches(duration);
+  cm = microsecondsToCentimeters(duration);
+      
+//  if (digitalRead(bluetoothStatePin) == LOW)// this is reading wrong? always HIGH
+//  {//bluetooth connection lost
+//    blueTooth.flush();
+//    blueToothVal = 'S';
+//    allStopARCC();
+//  }
+//  
+//  else
+//  {// we're connected   
+    if (blueTooth.available())
+    {
+      blueToothVal = char(blueTooth.read());
       Serial.print("Captured Char: ");
-      Serial.println(blueToothVal);
-
-      //clear the data for the next cycle
-//      blueTooth.flush();
+      Serial.println(blueToothVal);      
     }
     
     if (blueToothVal == "L") 
-    {//left
+    {// left
         analogWrite(steeringMotor1, 200);  
         analogWrite(steeringMotor2, 0); 
         analogWrite(driveMotor1, 0);  
         analogWrite(driveMotor2, 0);
     } 
     else if (blueToothVal == "R") 
-    {//right
+    {// right
         analogWrite(steeringMotor1, 0);  
         analogWrite(steeringMotor2, 200); 
         analogWrite(driveMotor1, 0);  
         analogWrite(driveMotor2, 0);  
     }
     else if (blueToothVal == "F") 
-    {//forward
-        analogWrite(steeringMotor1, 0);  
-        analogWrite(steeringMotor2, 0); 
-        analogWrite(driveMotor1, 200);  
-        analogWrite(driveMotor2, 0);  
+    {// forward
+        if(inches < safeDisitanceInches) 
+        {
+          blueToothVal = "S";
+          blueTooth.print(inches);
+          blueTooth.print("in, ");
+          blueTooth.print(cm);
+          blueTooth.print("cm");
+          blueTooth.println();
+          allStopARCC();
+        } else {
+          analogWrite(steeringMotor1, 0);  
+          analogWrite(steeringMotor2, 0); 
+          analogWrite(driveMotor1, 200);  
+          analogWrite(driveMotor2, 0);  
+        }
     }
     else if (blueToothVal == "B") 
-    {//forward
+    {// forward
         analogWrite(steeringMotor1, 0);  
         analogWrite(steeringMotor2, 0); 
         analogWrite(driveMotor1, 0);  
@@ -107,7 +141,8 @@ void loop()
     {
       allStopARCC();
     }
-  }
+    
+//  }
 }
 
 /**
@@ -121,6 +156,46 @@ void allStopARCC()
   analogWrite(steeringMotor2, 0); 
   analogWrite(driveMotor1, 0);  
   analogWrite(driveMotor2, 0);
+}
+/**
+ * THX: https://gist.github.com/flakas
+ * 
+ * The sensor is triggered by a HIGH pulse of 10 or more microseconds.
+ * Give a short LOW pulse beforehand to ensure a clean HIGH pulse:
+ * 
+ */
+void resetPING() 
+{
+  pinMode(trigPin, OUTPUT);
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+}
+/**
+ * THX: https://gist.github.com/flakas
+ * 
+ * According to Parallax's datasheet for the PING))), there are
+ * 73.746 microseconds per inch (i.e. sound travels at 1130 feet per
+ * second).  This gives the distance travelled by the ping, outbound
+ * and return, so we divide by 2 to get the distance of the obstacle.
+ * See: http://www.parallax.com/dl/docs/prod/acc/28015-PING-v1.3.pdf
+ */
+long microsecondsToInches(long microseconds)
+{
+  return microseconds / 74 / 2;
+}
+/**
+ * THX: https://gist.github.com/flakas
+ * 
+ * The speed of sound is 340 m/s or 29 microseconds per centimeter.
+ * The ping travels out and back, so to find the distance of the
+ * object we take half of the distance travelled.
+ */
+long microsecondsToCentimeters(long microseconds)
+{
+  return microseconds / 29 / 2;
 }
 
 

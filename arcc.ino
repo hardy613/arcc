@@ -11,20 +11,20 @@
 
 */
 //bluetooth connection
-#define rxPin 4               //bluetooth tx pin
-#define txPin 2               //bluetooth rx pin
-#define bluetoothStatePin 11  //bluetooth state pin
-#define baudRate 115200       //AT+BUAD8 ammount of data we can pass
+const int rxPin = 4;               //bluetooth tx pin
+const int txPin = 2;               //bluetooth rx pin
+const int bluetoothStatePin = 11;  //bluetooth state pin
+const int baudRate = 115200;       //AT+BUAD8 ammount of data we can pass
 
 //L293D Connection
-#define steeringMotor1 10 //L293D pin 10
-#define steeringMotor2 9  //L293D pin 14
-#define driveMotor1 5     //L293D pin 2
-#define driveMotor2 6     //L293D pin 7
+const int steeringMotor1 = 10; //L293D pin 10
+const int steeringMotor2 = 9;  //L293D pin 14
+const int driveMotor1 = 5;     //L293D pin 2
+const int driveMotor2 = 6;     //L293D pin 7
 
 //PING)))
-#define echoPin 8
-#define trigPin 7
+const int echoPin = 8;
+const int trigPin = 7;
 
 //bluetooth data
 String blueToothVal;
@@ -52,6 +52,11 @@ void setup()
   pinMode(steeringMotor2, OUTPUT);
   pinMode(driveMotor1, OUTPUT);
   pinMode(driveMotor2, OUTPUT);
+
+  //HC-SR04
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
+  
   //open communication
   Serial.begin(baudRate);
   blueTooth.begin(baudRate);
@@ -61,11 +66,10 @@ void setup()
 
 void loop()
 {  
-
   // establish variables for duration of the ping, 
   // and the distance result in inches and centimeters:
   long duration, inches, cm;
-  pinMode(trigPin, OUTPUT);
+
   digitalWrite(trigPin, LOW);
   delayMicroseconds(2);
   digitalWrite(trigPin, HIGH);
@@ -74,11 +78,9 @@ void loop()
   
   // Read the signal from the sensor: a HIGH pulse whose
   // duration is the time (in microseconds) from the sending
-  // of the ping to the reception of its echo off of an object.
-  pinMode(echoPin, INPUT);
+  // of the ping to the reception of its echo off of an object
+  // and convert the time into a distance.
   duration = pulseIn(echoPin, HIGH);
-  
-  // convert the time into a distance
   inches = microsecondsToInches(duration);
   cm = microsecondsToCentimeters(duration);
       

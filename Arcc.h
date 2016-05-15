@@ -13,13 +13,19 @@ class Arcc
     Arcc(int steeringMotorLeft, int steeringMotorRight, int driveMotorForward, int driveMotorBackward);
     void checkBatteryLife();
     void allStop();
+    void left(int power);
+    void right(int power);
+    void forward(int power);
+    void backward(int power);
     
   private :
-  //L293D Connection
+  /**
+   * variables
+   */
   int _steeringMotorLeft;   
   int _steeringMotorRight;  
   int _driveMotorForward;   
-  int _driveMotorBackward;  
+  int _driveMotorBackward;
 };
 
 #endif

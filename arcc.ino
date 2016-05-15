@@ -13,21 +13,21 @@
 
 */
 //bluetooth connection
-const long baudRate = 115200;      //AT+BUAD8 ammount of data we can pass
-const int rxPin = 4;               //bluetooth tx pin
-const int txPin = 2;               //bluetooth rx pin
-const int bluetoothStatePin = 11;  //bluetooth state pin
+const long baudRate           = 115200;
+const int rxPin               = 4;      //bluetooth tx pin
+const int txPin               = 2;      //bluetooth rx pin
+const int bluetoothStatePin   = 11;
 //Arcc
-const int steeringMotorLeft = 10; 
-const int steeringMotorRight = 9;  
-const int driveMotorForward = 5;     
-const int driveMotorBackward = 6;     
-//PING)))
+const int steeringMotorLeft   = 10; 
+const int steeringMotorRight  = 9;  
+const int driveMotorForward   = 5;     
+const int driveMotorBackward  = 6;     
+//HC-SR04
 const int echoPin = 8;
 const int trigPin = 7;
 //bluetooth data
 String blueToothVal;
-//PING))) safe distance, try to save the car from crashing 
+//HC-SR04 safe distance, try to save the car from crashing 
 int safeDisitanceInches = 4;
 //setting this up allows us to send updates to the
 //board without having to remove wires.
@@ -46,7 +46,6 @@ void setup()
   pinMode(rxPin, INPUT);
   pinMode(txPin, OUTPUT);
 
-
   //HC-SR04
   pinMode(trigPin, OUTPUT);
   pinMode(echoPin, INPUT);
@@ -63,21 +62,18 @@ void loop()
   // establish variables for duration of the ping, 
   // and the distance result in inches and centimeters:
   long duration, inches, cm;
-
+  // Read the signal from the sensor: a HIGH pulse whose
+  // duration is the time (in microseconds) from the sending
+  // of the ping to the reception of its echo off of an object
+  // and convert the time into a distance.
   digitalWrite(trigPin, LOW);
   delayMicroseconds(2);
   digitalWrite(trigPin, HIGH);
   delayMicroseconds(10);
   digitalWrite(trigPin, LOW);
-  
-  // Read the signal from the sensor: a HIGH pulse whose
-  // duration is the time (in microseconds) from the sending
-  // of the ping to the reception of its echo off of an object
-  // and convert the time into a distance.
   duration = pulseIn(echoPin, HIGH);
   inches = microsecondsToInches(duration);
   cm = microsecondsToCentimeters(duration);
-      
 //  if (digitalRead(bluetoothStatePin) == LOW)// this is reading wrong? always HIGH
 //  {//bluetooth connection lost
 //    BlueTooth.flush();
@@ -96,22 +92,16 @@ void loop()
     
     if (blueToothVal == "L") 
     {// left
-        analogWrite(steeringMotorLeft, 200);  
-        analogWrite(steeringMotorRight, 0); 
-        analogWrite(driveMotorForward, 0);  
-        analogWrite(driveMotorBackward, 0);
+        Arcc.left(200);
     } 
     else if (blueToothVal == "R") 
     {// right
-        analogWrite(steeringMotorLeft, 0);  
-        analogWrite(steeringMotorRight, 200); 
-        analogWrite(driveMotorForward, 0);  
-        analogWrite(driveMotorBackward, 0);  
+        Arcc.right(200); 
     }
     else if (blueToothVal == "F") 
     {// forward
         if(inches < safeDisitanceInches) 
-        {
+        {// NO CHRASHING!
           blueToothVal = "S";
           BlueTooth.print(inches);
           BlueTooth.print("in, ");
@@ -120,18 +110,12 @@ void loop()
           BlueTooth.println();
           Arcc.allStop();
         } else {
-          analogWrite(steeringMotorLeft, 0);  
-          analogWrite(steeringMotorRight, 0); 
-          analogWrite(driveMotorForward, 200);  
-          analogWrite(driveMotorBackward, 0);  
+           Arcc.forward(200); 
         }
     }
     else if (blueToothVal == "B") 
     {// backward
-        analogWrite(steeringMotorLeft, 0);  
-        analogWrite(steeringMotorRight, 0); 
-        analogWrite(driveMotorForward, 0);  
-        analogWrite(driveMotorBackward, 200);  
+        Arcc.backward(200); 
     }
     else 
     {
@@ -139,22 +123,6 @@ void loop()
     }
     
 //  }
-}
-/**
- * THX: https://gist.github.com/flakas
- * 
- * The sensor is triggered by a HIGH pulse of 10 or more microseconds.
- * Give a short LOW pulse beforehand to ensure a clean HIGH pulse:
- * 
- */
-void resetPING() 
-{
-  pinMode(trigPin, OUTPUT);
-  digitalWrite(trigPin, LOW);
-  delayMicroseconds(2);
-  digitalWrite(trigPin, HIGH);
-  delayMicroseconds(10);
-  digitalWrite(trigPin, LOW);
 }
 /**
  * THX: https://gist.github.com/flakas

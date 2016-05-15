@@ -1,4 +1,6 @@
 #include <SoftwareSerial.h>
+//my libraries
+#include "Arcc.h"
 /**
     @file:  basic set up for blueTooth connection with my phone
             I would like to add a WiiMote in the future
@@ -14,7 +16,7 @@
 const int rxPin = 4;               //bluetooth tx pin
 const int txPin = 2;               //bluetooth rx pin
 const int bluetoothStatePin = 11;  //bluetooth state pin
-const int baudRate = 115200;       //AT+BUAD8 ammount of data we can pass
+const long baudRate = 115200;       //AT+BUAD8 ammount of data we can pass
 
 //L293D Connection
 const int steeringMotor1 = 10; //L293D pin 10

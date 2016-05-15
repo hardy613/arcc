@@ -31,9 +31,9 @@ String blueToothVal;
 int safeDisitanceInches = 4;
 //setting this up allows us to send updates to the
 //board without having to remove wires.
-SoftwareSerial blueTooth(rxPin, txPin);
+SoftwareSerial BlueTooth(rxPin, txPin);
 //set up the car
-Arcc arcc(steeringMotorLeft, steeringMotorRight, driveMotorForward , driveMotorBackward);
+Arcc Arcc(steeringMotorLeft, steeringMotorRight, driveMotorForward, driveMotorBackward);
 /**
  * Begin our serial and bluetooth buad rates
  * Set the State, RX and TX pins for bluetooth comms
@@ -53,7 +53,7 @@ void setup()
   
   //open communication
   Serial.begin(baudRate);
-  blueTooth.begin(baudRate);
+  BlueTooth.begin(baudRate);
   
   Serial.println("Starting: ...");
 }
@@ -80,16 +80,16 @@ void loop()
       
 //  if (digitalRead(bluetoothStatePin) == LOW)// this is reading wrong? always HIGH
 //  {//bluetooth connection lost
-//    blueTooth.flush();
+//    BlueTooth.flush();
 //    blueToothVal = 'S';
-//    arcc.allStop();
+//    Arcc.allStop();
 //  }
 //  
 //  else
 //  {// we're connected   
-    if (blueTooth.available())
+    if (BlueTooth.available())
     {
-      blueToothVal = char(blueTooth.read());
+      blueToothVal = char(BlueTooth.read());
       Serial.print("Captured Char: ");
       Serial.println(blueToothVal);      
     }
@@ -113,12 +113,12 @@ void loop()
         if(inches < safeDisitanceInches) 
         {
           blueToothVal = "S";
-          blueTooth.print(inches);
-          blueTooth.print("in, ");
-          blueTooth.print(cm);
-          blueTooth.print("cm");
-          blueTooth.println();
-          arcc.allStop();
+          BlueTooth.print(inches);
+          BlueTooth.print("in, ");
+          BlueTooth.print(cm);
+          BlueTooth.print("cm");
+          BlueTooth.println();
+          Arcc.allStop();
         } else {
           analogWrite(steeringMotorLeft, 0);  
           analogWrite(steeringMotorRight, 0); 
@@ -135,7 +135,7 @@ void loop()
     }
     else 
     {
-      arcc.allStop();
+      Arcc.allStop();
     }
     
 //  }

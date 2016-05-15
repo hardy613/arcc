@@ -17,6 +17,7 @@ class Arcc
     void right(int power);
     void forward(int power);
     void backward(int power);
+    void straight();
     
   private :
   /**

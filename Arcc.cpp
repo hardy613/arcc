@@ -66,6 +66,12 @@ void Arcc::backward(int power)
   int output = constrain(power, 0, 255);
   analogWrite(_driveMotorBackward, output);  
 }
+
+void Arcc::straight()
+{
+  analogWrite(_steeringMotorLeft,   0); 
+  analogWrite(_steeringMotorRight,  0);  
+}
 /**
  * checkBatteryLife
  * 

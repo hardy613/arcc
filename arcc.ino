@@ -90,19 +90,19 @@ void loop()
       Serial.println(blueToothVal);      
     }
     
-    if (blueToothVal == "L") 
+    if (blueToothVal == "l") 
     {// left
         Arcc.left(200);
     } 
-    else if (blueToothVal == "R") 
+    else if (blueToothVal == "r") 
     {// right
         Arcc.right(200); 
     }
-    else if (blueToothVal == "F") 
+    else if (blueToothVal == "f") 
     {// forward
         if(inches < safeDisitanceInches) 
         {// NO CHRASHING!
-          blueToothVal = "S";
+          blueToothVal = "s";
           BlueTooth.print(inches);
           BlueTooth.print("in, ");
           BlueTooth.print(cm);
@@ -110,12 +110,16 @@ void loop()
           BlueTooth.println();
           Arcc.allStop();
         } else {
-           Arcc.forward(200); 
+           Arcc.forward(100); 
         }
     }
-    else if (blueToothVal == "B") 
+    else if (blueToothVal == "b") 
     {// backward
         Arcc.backward(200); 
+    }
+    else if (blueToothVal == "v") 
+    {// straight
+        Arcc.straight(); 
     }
     else 
     {

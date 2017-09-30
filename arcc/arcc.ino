@@ -23,7 +23,7 @@ const int driveMotorForward   = 5;
 const int driveMotorBackward  = 6;     
 
 //bluetooth data
-String blueToothVal;
+char blueToothVal;
 //setting this up allows us to send updates to the
 //board without having to remove wires.
 SoftwareSerial BlueTooth(rxPin, txPin);

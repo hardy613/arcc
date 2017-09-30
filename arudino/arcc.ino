@@ -63,7 +63,7 @@ void loop()
 	} else if (blueToothVal == "r") {// right
 		Arcc.right(200); 
 	} else if (blueToothVal == "f") {// forward
-			Arcc.forward(100); 
+		Arcc.forward(100); 
 	} else if (blueToothVal == "b") {// backward
 		Arcc.backward(200); 
 	} else if (blueToothVal == "v") {// straight

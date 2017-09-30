@@ -1,7 +1,7 @@
 import sys
 import bluetooth
 
-print "Looking for ScottsArduino"
+print "Looking for arcc"
 
 all_devices = bluetooth.discover_devices(
         duration=8, lookup_names=True,
@@ -9,8 +9,8 @@ all_devices = bluetooth.discover_devices(
 
 for addr, name in all_devices:
     try:
-        if name == "ScottsArduino":
-            print "Found ScottsArduino at address: %s" % addr
+        if name == "arcc":
+            print "Found arcc at address: %s" % addr
 
             sock = bluetooth.BluetoothSocket()
             

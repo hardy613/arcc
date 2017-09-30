@@ -53,11 +53,11 @@ void loop() {
 		Serial.print("Captured Char: ");
 		Serial.println(incomingValue);      
 	} else if (Serial.available() > 0) {
-    incomingValue = char(Serial.read());
-    Serial.print("Captured Char: ");
-    Serial.println(incomingValue);
-  }
-  
+		incomingValue = char(Serial.read());
+		Serial.print("Captured Char: ");
+		Serial.println(incomingValue);
+	}
+
 	if (incomingValue == 'l')  {// left
 		Arcc.left(200);
 	} else if (incomingValue == 'r') {// right

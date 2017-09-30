@@ -30,7 +30,7 @@ SoftwareSerial BlueTooth(rxPin, txPin);
 //set up the car
 Arcc Arcc(steeringMotorLeft, steeringMotorRight, driveMotorForward, driveMotorBackward);
 /**
- * Begin our serial and bluetooth buad rat
+ * Begin our serial and bluetooth buad rates
  * Set the State, RX and TX pins for bluetooth comms
  * Set pins for steering and driving motors
  */
@@ -40,16 +40,13 @@ void setup()
 	pinMode(bluetoothStatePin, INPUT);
 	pinMode(rxPin, INPUT);
 	pinMode(txPin, OUTPUT);
-
 	//open communication
 	Serial.begin(baudRate);
 	BlueTooth.begin(baudRate);
-
 	Serial.println("Starting: ...");
 }
 
-void loop()
-{  
+void loop() {  
 	// we're connected   
 	if (BlueTooth.available()) {
 		incomingValue = char(BlueTooth.read());

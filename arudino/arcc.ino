@@ -2,16 +2,16 @@
 //my libraries
 #include "Arcc.h"
 /**
-    @file:  basic set up for blueTooth connection with my phone
-            I would like to add a WiiMote in the future
-            right now we are just reading the data we send it,
-            just need a steering wheel (hence wiimote).
+	@file:  basic set up for blueTooth connection with my phone
+	I would like to add a WiiMote in the future
+	right now we are just reading the data we send it,
+	just need a steering wheel (hence wiimote).
 
-    @uses:  HC-06 BlueTooth Module - communication
-            HC-SR04 Sensor - distance sensor
-            Andriod phone (Nexus 5x) - steering wheel
+	@uses:  HC-06 BlueTooth Module - communication
+	HC-SR04 Sensor - distance sensor
+	Andriod phone (Nexus 5x) - steering wheel
 
-*/
+ */
 //bluetooth connection
 const long baudRate           = 115200;
 const int rxPin               = 4;      //bluetooth tx pin
@@ -41,92 +41,84 @@ Arcc Arcc(steeringMotorLeft, steeringMotorRight, driveMotorForward, driveMotorBa
  */
 void setup()
 {
-  //bluetooth pins
-  pinMode(bluetoothStatePin, INPUT);
-  pinMode(rxPin, INPUT);
-  pinMode(txPin, OUTPUT);
+	//bluetooth pins
+	pinMode(bluetoothStatePin, INPUT);
+	pinMode(rxPin, INPUT);
+	pinMode(txPin, OUTPUT);
 
-  //HC-SR04
-  pinMode(trigPin, OUTPUT);
-  pinMode(echoPin, INPUT);
-  
-  //open communication
-  Serial.begin(baudRate);
-  BlueTooth.begin(baudRate);
-  
-  Serial.println("Starting: ...");
+	//HC-SR04
+	pinMode(trigPin, OUTPUT);
+	pinMode(echoPin, INPUT);
+
+	//open communication
+	Serial.begin(baudRate);
+	BlueTooth.begin(baudRate);
+
+	Serial.println("Starting: ...");
 }
 
 void loop()
 {  
-  // establish variables for duration of the ping, 
-  // and the distance result in inches and centimeters:
-  long duration, inches, cm;
-  // Read the signal from the sensor: a HIGH pulse whose
-  // duration is the time (in microseconds) from the sending
-  // of the ping to the reception of its echo off of an object
-  // and convert the time into a distance.
-  digitalWrite(trigPin, LOW);
-  delayMicroseconds(2);
-  digitalWrite(trigPin, HIGH);
-  delayMicroseconds(10);
-  digitalWrite(trigPin, LOW);
-  duration = pulseIn(echoPin, HIGH);
-  inches = microsecondsToInches(duration);
-  cm = microsecondsToCentimeters(duration);
-//  if (digitalRead(bluetoothStatePin) == LOW)// this is reading wrong? always HIGH
-//  {//bluetooth connection lost
-//    BlueTooth.flush();
-//    blueToothVal = 'S';
-//    Arcc.allStop();
-//  }
-//  
-//  else
-//  {// we're connected   
-    if (BlueTooth.available())
-    {
-      blueToothVal = char(BlueTooth.read());
-      Serial.print("Captured Char: ");
-      Serial.println(blueToothVal);      
-    }
-    
-    if (blueToothVal == "l") 
-    {// left
-        Arcc.left(200);
-    } 
-    else if (blueToothVal == "r") 
-    {// right
-        Arcc.right(200); 
-    }
-    else if (blueToothVal == "f") 
-    {// forward
-        if(inches < safeDisitanceInches) 
-        {// NO CHRASHING!
-          blueToothVal = "s";
-          BlueTooth.print(inches);
-          BlueTooth.print("in, ");
-          BlueTooth.print(cm);
-          BlueTooth.print("cm");
-          BlueTooth.println();
-          Arcc.allStop();
-        } else {
-           Arcc.forward(100); 
-        }
-    }
-    else if (blueToothVal == "b") 
-    {// backward
-        Arcc.backward(200); 
-    }
-    else if (blueToothVal == "v") 
-    {// straight
-        Arcc.straight(); 
-    }
-    else 
-    {
-      Arcc.allStop();
-    }
-    
-//  }
+	// establish variables for duration of the ping, 
+	// and the distance result in inches and centimeters:
+	long duration, inches, cm;
+	// Read the signal from the sensor: a HIGH pulse whose
+	// duration is the time (in microseconds) from the sending
+	// of the ping to the reception of its echo off of an object
+	// and convert the time into a distance.
+	digitalWrite(trigPin, LOW);
+	delayMicroseconds(2);
+	digitalWrite(trigPin, HIGH);
+	delayMicroseconds(10);
+	digitalWrite(trigPin, LOW);
+	duration = pulseIn(echoPin, HIGH);
+	inches = microsecondsToInches(duration);
+	cm = microsecondsToCentimeters(duration);
+	// we're connected   
+	if (BlueTooth.available())
+	{
+		blueToothVal = char(BlueTooth.read());
+		Serial.print("Captured Char: ");
+		Serial.println(blueToothVal);      
+	}
+
+	if (blueToothVal == "l") 
+	{// left
+		Arcc.left(200);
+	} 
+	else if (blueToothVal == "r") 
+	{// right
+		Arcc.right(200); 
+	}
+	else if (blueToothVal == "f") 
+	{// forward
+		if(inches < safeDisitanceInches) 
+		{// NO CHRASHING!
+			blueToothVal = "s";
+			BlueTooth.print(inches);
+			BlueTooth.print("in, ");
+			BlueTooth.print(cm);
+			BlueTooth.print("cm");
+			BlueTooth.println();
+			Arcc.allStop();
+		} else {
+			Arcc.forward(100); 
+		}
+	}
+	else if (blueToothVal == "b") 
+	{// backward
+		Arcc.backward(200); 
+	}
+	else if (blueToothVal == "v") 
+	{// straight
+		Arcc.straight(); 
+	}
+	else 
+	{
+		Arcc.allStop();
+	}
+
+	//  }
 }
 /**
  * THX: https://gist.github.com/flakas
@@ -139,7 +131,7 @@ void loop()
  */
 long microsecondsToInches(long microseconds)
 {
-  return microseconds / 74 / 2;
+	return microseconds / 74 / 2;
 }
 /**
  * THX: https://gist.github.com/flakas
@@ -150,7 +142,7 @@ long microsecondsToInches(long microseconds)
  */
 long microsecondsToCentimeters(long microseconds)
 {
-  return microseconds / 29 / 2;
+	return microseconds / 29 / 2;
 }
 
 

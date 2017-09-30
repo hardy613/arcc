@@ -58,15 +58,15 @@ void loop()
 		Serial.println(blueToothVal);      
 	}
 
-	if (blueToothVal == "l")  {// left
+	if (blueToothVal == 'l')  {// left
 		Arcc.left(200);
-	} else if (blueToothVal == "r") {// right
+	} else if (blueToothVal == 'r') {// right
 		Arcc.right(200); 
-	} else if (blueToothVal == "f") {// forward
+	} else if (blueToothVal == 'f') {// forward
 		Arcc.forward(100); 
-	} else if (blueToothVal == "b") {// backward
+	} else if (blueToothVal == 'b') {// backward
 		Arcc.backward(200); 
-	} else if (blueToothVal == "v") {// straight
+	} else if (blueToothVal == 'v') {// straight
 		Arcc.straight(); 
 	} else {
 		Arcc.allStop();

@@ -12,7 +12,7 @@
 
  */
 //bluetooth connection
-const long baudRate           = 115200;
+const long baudRate           = 9600;
 const int rxPin               = 4;      //bluetooth tx pin
 const int txPin               = 2;      //bluetooth rx pin
 const int bluetoothStatePin   = 11;
@@ -23,14 +23,14 @@ const int driveMotorForward   = 5;
 const int driveMotorBackward  = 6;     
 
 //bluetooth data
-String blueToothVal;
+char incomingValue;
 //setting this up allows us to send updates to the
 //board without having to remove wires.
 SoftwareSerial BlueTooth(rxPin, txPin);
 //set up the car
 Arcc Arcc(steeringMotorLeft, steeringMotorRight, driveMotorForward, driveMotorBackward);
 /**
- * Begin our serial and bluetooth buad rates
+ * Begin our serial and bluetooth buad rat
  * Set the State, RX and TX pins for bluetooth comms
  * Set pins for steering and driving motors
  */
@@ -51,22 +51,25 @@ void setup()
 void loop()
 {  
 	// we're connected   
-	if (BlueTooth.available())
-	{
-		blueToothVal = char(BlueTooth.read());
+	if (BlueTooth.available()) {
+		incomingValue = char(BlueTooth.read());
 		Serial.print("Captured Char: ");
-		Serial.println(blueToothVal);      
-	}
-
-	if (blueToothVal == "l")  {// left
+		Serial.println(incomingValue);      
+	} else if (Serial.available() > 0) {
+    incomingValue = char(Serial.read());
+    Serial.print("Captured Char: ");
+    Serial.println(incomingValue);
+  }
+  
+	if (incomingValue == 'l')  {// left
 		Arcc.left(200);
-	} else if (blueToothVal == "r") {// right
+	} else if (incomingValue == 'r') {// right
 		Arcc.right(200); 
-	} else if (blueToothVal == "f") {// forward
+	} else if (incomingValue == 'f') {// forward
 		Arcc.forward(100); 
-	} else if (blueToothVal == "b") {// backward
+	} else if (incomingValue == 'b') {// backward
 		Arcc.backward(200); 
-	} else if (blueToothVal == "v") {// straight
+	} else if (incomingValue == 'v') {// straight
 		Arcc.straight(); 
 	} else {
 		Arcc.allStop();

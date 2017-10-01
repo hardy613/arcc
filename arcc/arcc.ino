@@ -57,7 +57,7 @@ void loop() {
 			Serial.println(data);
 			data = "";
 		}
-	} 
+	}
 	/*
 		 if (incomingValue == 'l')  {
 		 Arcc.left(200);

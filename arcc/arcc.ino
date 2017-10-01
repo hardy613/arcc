@@ -23,7 +23,7 @@ const int driveMotorForward = 5;
 const int driveMotorBackward = 6;     
 
 //bluetooth data
-char incomingValue;
+String data;
 //setting this up allows us to send updates to the
 //board without having to remove wires.
 SoftwareSerial BlueTooth(rxPin, txPin);
@@ -35,8 +35,7 @@ Arcc Arcc(steeringMotorLeft, steeringMotorRight,
  * Set the State, RX and TX pins for bluetooth comms
  * Set pins for steering and driving motors
  */
-void setup()
-{
+void setup() {
 	//bluetooth pins
 	pinMode(bluetoothStatePin, INPUT);
 	pinMode(rxPin, INPUT);
@@ -49,16 +48,21 @@ void setup()
 
 void loop() {  
 	// we're connected   
-	if (BlueTooth.available()) {
-		incomingValue = char(BlueTooth.read());
-		Serial.print("Captured Char: ");
-		Serial.println(incomingValue);      
-	} else if (Serial.available() > 0) {
-		incomingValue = char(Serial.read());
-		Serial.print("Captured Char: ");
-		Serial.println(incomingValue);
+	while (BlueTooth.available()) {
+		char incomingValue = char(BlueTooth.read());
+		data.concat(incomingValue);
+		if(incomingValue == '\n') {
+			Serial.print("Bluetooth stream: ");
+			Serial.println(data);
+		}
+	} 
+  // serial will have precedance
+	if (Serial.available() > 0) {
+		data = Serial.read();
+		Serial.print("Serial stream: ");
+		Serial.println(data);
 	}
-
+/*
 	if (incomingValue == 'l')  {
 		Arcc.left(200);
 	} else if (incomingValue == 'r') {
@@ -72,4 +76,5 @@ void loop() {
 	} else {
 		Arcc.allStop();
 	}
+*/
 }

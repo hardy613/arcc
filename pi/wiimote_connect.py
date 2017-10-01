@@ -1,4 +1,5 @@
 import cwiid
+import re
 # connecting to the Wiimote. This allows several attempts
 # as first few often fail.
 print("Press 1 + 2 on your Wiimote now...")
@@ -23,4 +24,6 @@ wm.led = 1
 
 while True:
     # print "Buttons: ", wm.state['buttons']
-    print("State: ", wm.state)
+    str_data = re.sub(r'[()\s+]*', "", str(wm.state["acc"]))
+
+    print("data: %s" % str_data)

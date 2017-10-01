@@ -2,6 +2,7 @@ import cwiid
 import sys
 import bluetooth
 import json
+import re
 # connecting to the Wiimote. This allows several attempts
 # as first few often fail.
 print("Press 1 + 2 on your Wiimote now...")
@@ -43,13 +44,18 @@ for addr, name in all_devices:
 
             sock.connect((addr, port))
 
-            print("connected. Sending data Wiimote state.")
+            print("Connected, sending Wiimote state.")
             while True:
-                data = json.dumps(wm.state)
-                if len(data) != 0:
-                    sock.send(data + "\n")
-                    incoming_data = sock.recv(1024)
-                    print("Data received:", str(incoming_data))
+                str_data = re.sub(r"[()\s+]", "", str(wm.state["acc"]))
+                str_data +=","
+                str_data += str(wm.state["buttons"])
+                str_data += "\n"
+                # str_data = json.dumps(wm.state)
+                if len(str_data) != 0:
+                    data = buffer(str_data, 0, len(str_data))
+                    sock.send(data)
+                    # incoming_data = sock.recv(1024)
+                    # print(str(incoming_data))
 
     except:
         if sock is not None:

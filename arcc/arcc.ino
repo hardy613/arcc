@@ -16,22 +16,25 @@ const long baudRate = 9600;
 const int rxPin = 4; //bluetooth tx pin
 const int txPin = 2; //bluetooth rx pin
 const int bluetoothStatePin = 11;
-//Arcc
-const int steeringMotorLeft = 10; 
-const int steeringMotorRight = 9;  
-const int driveMotorForward = 5;     
-const int driveMotorBackward = 6;     
 
-//bluetooth data
-boolean newData = false;
-const byte numChars = 32;
-char receivedChars[numChars];
+// Representation is in three bytes, where the first byte is
+// the commands, second is the left/right power, and third
+// is the forward/backward power.
+const char COMMAND_FORWARD =  0b00000001;
+const char COMMAND_BACKWARD = 0b00000010;
+const char COMMAND_LEFT =     0b00000100;
+const char COMMAND_RIGHT =    0b00001000;
+
+const size_t BYTE_COMMAND = 0;
+const size_t BYTE_STEERING_POWER = 1;
+const size_t BYTE_PROPULSION_POWER = 2;
+
 //setting this up allows us to send updates to the
 //board without having to remove wires.
 SoftwareSerial Bluetooth(rxPin, txPin);
 //set up the car
-Arcc Arcc(steeringMotorLeft, steeringMotorRight,
-		driveMotorForward, driveMotorBackward);
+Arcc arcc = Arcc();
+
 /**
  * Begin our serial and bluetooth buad rates
  * Set the State, RX and TX pins for bluetooth comms
@@ -42,6 +45,7 @@ void setup() {
 	pinMode(bluetoothStatePin, INPUT);
 	pinMode(rxPin, INPUT);
 	pinMode(txPin, OUTPUT);
+  //arrc = Arcc();
 	//open communication
 	Serial.begin(baudRate);
 	Bluetooth.begin(baudRate);
@@ -49,57 +53,39 @@ void setup() {
 }
 
 void loop() {  
-	readBluetooth();
-	writeData();
-	// processData();
-	flushData();
-}
+	char bytes[3];
+	int index = 0;
 
-void readBluetooth() {
-	static byte charIndex = 0;
-	char ending = '\n';
-	char incomingValue;
-
-	while (Bluetooth.available() > 0 && newData == false) {
-		incomingValue = Bluetooth.read();
-
-		if(incomingValue != ending) {
-			receivedChars[charIndex] = incomingValue;
-			charIndex++;
-			if (charIndex >= numChars) {
-				charIndex = numChars - 1;
-			}
-		} else {
-			receivedChars[charIndex] = '\0'; // terminate the string
-			charIndex = 0;
-			newData = true;
+	for(int index = 0; Bluetooth.available() > 0 && index < 3; index++) {
+		bytes[index] = Bluetooth.read();
+		if(index == 2) {
+			processData(bytes);
+			writeData(bytes);
 		}
 	}
-}
 
-void writeData() {
-	if (newData == true) {
-		Serial.println(receivedChars);
-	}
-}
-
-void processData() {
-	if (receivedChars == 'l')  {
-		Arcc.left(200);
-	} else if (receivedChars == 'r') {
-		Arcc.right(200); 
-	} else if (receivedChars == 'f') {
-		Arcc.forward(100); 
-	} else if (receivedChars == 'b') {
-		Arcc.backward(200); 
-	} else if (receivedChars == 'v') {
-		Arcc.straight(); 
-	} else {
-		Arcc.allStop();
-	}
-}
-
-void flushData() {
 	Bluetooth.flush();
-	newData = false;
+}
+
+void writeData(const char* const receivedBytes) {
+	Serial.println(receivedBytes);
+}
+
+void processData(const char* const receivedBytes) {
+
+	if(receivedBytes[BYTE_COMMAND] & COMMAND_LEFT) {
+		arcc.left(receivedBytes[BYTE_STEERING_POWER]);
+	} else if(receivedBytes[BYTE_COMMAND] & COMMAND_RIGHT) {
+		arcc.right(receivedBytes[BYTE_STEERING_POWER]);
+	} else {
+		arcc.straight();
+	}
+
+	if(receivedBytes[BYTE_COMMAND] & COMMAND_FORWARD) {
+		arcc.forward(receivedBytes[BYTE_PROPULSION_POWER]);
+	} else if(receivedBytes[BYTE_COMMAND] & COMMAND_BACKWARD) {
+		arcc.backward(receivedBytes[BYTE_PROPULSION_POWER]);
+	} else {
+		arcc.stop();
+	}
 }

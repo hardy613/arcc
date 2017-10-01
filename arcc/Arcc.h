@@ -7,10 +7,11 @@
 
 #include "Arduino.h"
 
-class Arcc
-{
+class Arcc {
   public :
-    Arcc(int steeringMotorLeft, int steeringMotorRight, int driveMotorForward, int driveMotorBackward);
+    Arcc(int steeringMotorLeft, int steeringMotorRight,
+				int driveMotorForward, int driveMotorBackward);
+
     void checkBatteryLife();
     void allStop();
     void left(int power);
@@ -20,9 +21,6 @@ class Arcc
     void straight();
     
   private :
-  /**
-   * variables
-   */
   int _steeringMotorLeft;   
   int _steeringMotorRight;  
   int _driveMotorForward;   

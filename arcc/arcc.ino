@@ -29,7 +29,7 @@ String data;
 SoftwareSerial BlueTooth(rxPin, txPin);
 //set up the car
 Arcc Arcc(steeringMotorLeft, steeringMotorRight,
-	driveMotorForward, driveMotorBackward);
+		driveMotorForward, driveMotorBackward);
 /**
  * Begin our serial and bluetooth buad rates
  * Set the State, RX and TX pins for bluetooth comms
@@ -50,27 +50,27 @@ void loop() {
 	// we're connected   
 	while (BlueTooth.available()) {
 		char incomingValue = char(BlueTooth.read());
-    
+
 		if(incomingValue != '\n') {
-      data.concat(incomingValue);
+			data.concat(incomingValue);
 		} else {
-      Serial.println(data);
-      data = "";
+			Serial.println(data);
+			data = "";
 		}
 	} 
-/*
-	if (incomingValue == 'l')  {
-		Arcc.left(200);
-	} else if (incomingValue == 'r') {
-		Arcc.right(200); 
-	} else if (incomingValue == 'f') {
-		Arcc.forward(100); 
-	} else if (incomingValue == 'b') {
-		Arcc.backward(200); 
-	} else if (incomingValue == 'v') {
-		Arcc.straight(); 
-	} else {
-		Arcc.allStop();
-	}
-*/
+	/*
+		 if (incomingValue == 'l')  {
+		 Arcc.left(200);
+		 } else if (incomingValue == 'r') {
+		 Arcc.right(200); 
+		 } else if (incomingValue == 'f') {
+		 Arcc.forward(100); 
+		 } else if (incomingValue == 'b') {
+		 Arcc.backward(200); 
+		 } else if (incomingValue == 'v') {
+		 Arcc.straight(); 
+		 } else {
+		 Arcc.allStop();
+		 }
+	 */
 }

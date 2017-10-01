@@ -55,6 +55,7 @@ void loop() {
 			data.concat(incomingValue);
 		} else {
 			Serial.println(data);
+			BlueTooth.write("OK");
 			data = "";
 		}
 	}

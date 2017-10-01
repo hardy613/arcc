@@ -45,14 +45,13 @@ for addr, name in all_devices:
 
             print("connected. Sending data Wiimote state.")
             while True:
-                # print("state: %s" % wm.state)
                 data = json.dumps(wm.state)
                 if len(data) != 0:
                     sock.send(data + "\n")
-                    # incoming_data = sock.recv(1024)
-                    # print("Data received:", str(incoming_data))
+                    incoming_data = sock.recv(1024)
+                    print("Data received:", str(incoming_data))
 
     except:
-        if sock != None:
+        if sock is not None:
             sock.close()
         print("Error", sys.exc_info())

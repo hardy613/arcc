@@ -23,7 +23,9 @@ const int driveMotorForward = 5;
 const int driveMotorBackward = 6;     
 
 //bluetooth data
-String data;
+boolean newData = false;
+const byte numChars = 32;
+char receivedChars[numChars];
 //setting this up allows us to send updates to the
 //board without having to remove wires.
 SoftwareSerial BlueTooth(rxPin, txPin);
@@ -47,31 +49,57 @@ void setup() {
 }
 
 void loop() {  
-	// we're connected   
-	while (BlueTooth.available()) {
-		char incomingValue = char(BlueTooth.read());
+  readBluetooth();
+  writeData();
+	// processData();
+	flushData();
+}
 
-		if(incomingValue != '\n') {
-			data.concat(incomingValue);
+void readBluetooth() {
+	static byte index = 0;
+  char ending = '\n';
+  char incomingValue;
+
+	while (BlueTooth.available() > 0 && newData == false) {
+		incomingValue = BlueTooth.read();
+		
+		if(incomingValue != ending) {
+			receivedChars[index] = incomingValue;
+			index++;
+			if (index >= numChars) {
+				index = numChars - 1;
+			}
 		} else {
-			Serial.println(data);
-			BlueTooth.write("OK");
-			data = "";
+			receivedChars[index] = '\0'; // terminate the string
+			index = 0;
+			newData = true;
 		}
 	}
-	/*
-		 if (incomingValue == 'l')  {
-		 Arcc.left(200);
-		 } else if (incomingValue == 'r') {
-		 Arcc.right(200); 
-		 } else if (incomingValue == 'f') {
-		 Arcc.forward(100); 
-		 } else if (incomingValue == 'b') {
-		 Arcc.backward(200); 
-		 } else if (incomingValue == 'v') {
-		 Arcc.straight(); 
-		 } else {
-		 Arcc.allStop();
-		 }
-	 */
+}
+
+void writeData() {
+	if (newData == true) {
+		Serial.println(receivedChars);
+	}
+}
+
+void processData() {
+	if (receivedChars == 'l')  {
+		Arcc.left(200);
+	} else if (receivedChars == 'r') {
+		Arcc.right(200); 
+	} else if (receivedChars == 'f') {
+		Arcc.forward(100); 
+	} else if (receivedChars == 'b') {
+		Arcc.backward(200); 
+	} else if (receivedChars == 'v') {
+		Arcc.straight(); 
+	} else {
+		Arcc.allStop();
+	}
+}
+
+void flushData() {
+	BlueTooth.flush();
+	newData = false;
 }

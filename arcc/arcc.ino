@@ -7,7 +7,7 @@
 	right now we are just reading the data we send it,
 	just need a steering wheel (hence wiimote).
 
-	@uses:  HC-06 BlueTooth Module - communication
+	@uses:  HC-06 Bluetooth Module - communication
 	Andriod phone (Nexus 5x) - steering wheel
 
  */
@@ -28,7 +28,7 @@ const byte numChars = 32;
 char receivedChars[numChars];
 //setting this up allows us to send updates to the
 //board without having to remove wires.
-SoftwareSerial BlueTooth(rxPin, txPin);
+SoftwareSerial Bluetooth(rxPin, txPin);
 //set up the car
 Arcc Arcc(steeringMotorLeft, steeringMotorRight,
 		driveMotorForward, driveMotorBackward);
@@ -44,7 +44,7 @@ void setup() {
 	pinMode(txPin, OUTPUT);
 	//open communication
 	Serial.begin(baudRate);
-	BlueTooth.begin(baudRate);
+	Bluetooth.begin(baudRate);
 	Serial.println("Starting: ...");
 }
 
@@ -56,22 +56,22 @@ void loop() {
 }
 
 void readBluetooth() {
-	static byte index = 0;
+	static byte charIndex = 0;
 	char ending = '\n';
 	char incomingValue;
 
-	while (BlueTooth.available() > 0 && newData == false) {
-		incomingValue = BlueTooth.read();
+	while (Bluetooth.available() > 0 && newData == false) {
+		incomingValue = Bluetooth.read();
 
 		if(incomingValue != ending) {
-			receivedChars[index] = incomingValue;
-			index++;
-			if (index >= numChars) {
-				index = numChars - 1;
+			receivedChars[charIndex] = incomingValue;
+			charIndex++;
+			if (charIndex >= numChars) {
+				charIndex = numChars - 1;
 			}
 		} else {
-			receivedChars[index] = '\0'; // terminate the string
-			index = 0;
+			receivedChars[charIndex] = '\0'; // terminate the string
+			charIndex = 0;
 			newData = true;
 		}
 	}
@@ -100,6 +100,6 @@ void processData() {
 }
 
 void flushData() {
-	BlueTooth.flush();
+	Bluetooth.flush();
 	newData = false;
 }

@@ -23,7 +23,7 @@ wm.rpt_mode = cwiid.RPT_BTN | cwiid.RPT_ACC
 
 # turn on led to show connected
 wm.led = 1
-
+sock = None
 print("Connected to Wiimote, connecting to arcc")
 
 all_devices = bluetooth.discover_devices(
@@ -44,16 +44,15 @@ for addr, name in all_devices:
             sock.connect((addr, port))
 
             print("connected. Sending data Wiimote state.")
-
             while True:
-                data = json.dumps(wm.state["buttons"])
-                if len(data) == 0:
-                    break
-                sock.send(data)
-                data = sock.recv(1024)
-                print("Data received:", str(data))
-
-            sock.close()
+                # print("state: %s" % wm.state)
+                data = json.dumps(wm.state)
+                if len(data) != 0:
+                    sock.send(data + "\n")
+                    # incoming_data = sock.recv(1024)
+                    # print("Data received:", str(incoming_data))
 
     except:
+        if sock != None:
+            sock.close()
         print("Error", sys.exc_info())

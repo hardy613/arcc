@@ -46,7 +46,7 @@ for addr, name in all_devices:
             print("connected. Sending data Wiimote state.")
 
             while True:
-                data = json.dumps(wm.state)
+                data = json.dumps(wm.state["buttons"])
                 if len(data) == 0:
                     break
                 sock.send(data)

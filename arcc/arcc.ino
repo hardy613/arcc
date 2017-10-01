@@ -49,20 +49,20 @@ void setup() {
 }
 
 void loop() {  
-  readBluetooth();
-  writeData();
+	readBluetooth();
+	writeData();
 	// processData();
 	flushData();
 }
 
 void readBluetooth() {
 	static byte index = 0;
-  char ending = '\n';
-  char incomingValue;
+	char ending = '\n';
+	char incomingValue;
 
 	while (BlueTooth.available() > 0 && newData == false) {
 		incomingValue = BlueTooth.read();
-		
+
 		if(incomingValue != ending) {
 			receivedChars[index] = incomingValue;
 			index++;

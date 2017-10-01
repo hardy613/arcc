@@ -50,18 +50,14 @@ void loop() {
 	// we're connected   
 	while (BlueTooth.available()) {
 		char incomingValue = char(BlueTooth.read());
-		data.concat(incomingValue);
-		if(incomingValue == '\n') {
-			Serial.print("Bluetooth stream: ");
-			Serial.println(data);
+    
+		if(incomingValue != '\n') {
+      data.concat(incomingValue);
+		} else {
+      Serial.println(data);
+      data = "";
 		}
 	} 
-  // serial will have precedance
-	if (Serial.available() > 0) {
-		data = Serial.read();
-		Serial.print("Serial stream: ");
-		Serial.println(data);
-	}
 /*
 	if (incomingValue == 'l')  {
 		Arcc.left(200);

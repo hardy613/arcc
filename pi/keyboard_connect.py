@@ -7,7 +7,7 @@ import os
 import atexit
 
 bluetooth_port = 4097
-device_name = 'arcc ' if len(sys.argv) == 1 else sys.argv[1]
+device_name = 'arcc' if len(sys.argv) == 1 else sys.argv[1]
 
 COMMAND_FORWARD = 0b00000001
 COMMAND_BACKWARD = 0b00000010
@@ -19,7 +19,7 @@ def bluetooth_connect():
     if os.environ.get('BLUETOOTH_STUB'):
         return None
     devices = discover_devices(
-        duration=8, lookup_names=True, flush_cache=True,
+        duration=4, lookup_names=True, flush_cache=True,
         lookup_class=False)
 
     for address, name in devices:
@@ -66,16 +66,23 @@ class KeyboardState:
             self.left, self.right, self.forward, self.backward)
 
 
+state = KeyboardState()
+
+
 def on_exit():
     curses.nocbreak()
     screen.keypad(False)
     curses.echo()
     curses.endwin()
     if socket is not None:
+        state.left = False
+        state.right = False
+        state.forward = False
+        state.backward = False
+        socket.send(state.encode())
         socket.close()
 
 
-state = KeyboardState()
 socket = bluetooth_connect()
 
 atexit.register(on_exit)

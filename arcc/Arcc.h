@@ -9,22 +9,15 @@
 
 class Arcc {
 	public :
-		Arcc(int steeringMotorLeft, int steeringMotorRight,
-				int driveMotorForward, int driveMotorBackward);
+		Arcc();
 
-		void checkBatteryLife();
-		void allStop();
 		void left(int power);
 		void right(int power);
 		void forward(int power);
 		void backward(int power);
+		void stop();
 		void straight();
 
-	private :
-		int _steeringMotorLeft;   
-		int _steeringMotorRight;  
-		int _driveMotorForward;   
-		int _driveMotorBackward;
 };
 
 #endif

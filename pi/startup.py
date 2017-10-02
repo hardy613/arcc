@@ -1,7 +1,6 @@
 import cwiid
 import sys
 import bluetooth
-import json
 import re
 # connecting to the Wiimote. This allows several attempts
 # as first few often fail.
@@ -47,7 +46,7 @@ for addr, name in all_devices:
             print("Connected, sending Wiimote state.")
             while True:
                 str_data = re.sub(r"[()\s+]", "", str(wm.state["acc"]))
-                str_data +=","
+                str_data += ","
                 str_data += str(wm.state["buttons"])
                 str_data += "\n"
                 # str_data = json.dumps(wm.state)

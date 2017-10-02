@@ -4,6 +4,7 @@ from bluetooth import discover_devices, BluetoothSocket
 import curses
 import sys
 import os
+import atexit
 
 bluetooth_port = 4097
 device_name = 'arcc ' if len(sys.argv) == 1 else sys.argv[1]
@@ -60,13 +61,24 @@ class KeyboardState:
         return bytes([command, steering_power, propulsion_power])
 
     def __repr__(self):
-        template = '<KeyboardState left={}, right={}, forward={}, backword={}'
+        template = '<KeyboardState left={}, right={}, forward={}, backword={}>'
         return template.format(
             self.left, self.right, self.forward, self.backward)
 
 
+def on_exit():
+    curses.nocbreak()
+    screen.keypad(False)
+    curses.echo()
+    curses.endwin()
+    if socket is not None:
+        socket.close()
+
+
 state = KeyboardState()
 socket = bluetooth_connect()
+
+atexit.register(on_exit)
 
 screen = curses.initscr()
 curses.noecho()
@@ -91,12 +103,8 @@ while True:
         state.forward = True
 
     if event == curses.KEY_ENTER or event == -1 or event == 10 or event == 49:
-        curses.nocbreak()
-        screen.keypad(False)
-        curses.echo()
-        curses.endwin()
-        if socket is not None:
-            socket.close()
+        on_exit()
+        atexit.unregister(on_exit)
         break
     else:
         if socket is not None:

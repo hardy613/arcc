@@ -20,10 +20,10 @@ const int bluetoothStatePin = 11;
 // Representation is in three bytes, where the first byte is
 // the commands, second is the left/right power, and third
 // is the forward/backward power.
-const char COMMAND_FORWARD =  0b00000001;
+const char COMMAND_FORWARD = 0b00000001;
 const char COMMAND_BACKWARD = 0b00000010;
-const char COMMAND_LEFT =     0b00000100;
-const char COMMAND_RIGHT =    0b00001000;
+const char COMMAND_LEFT = 0b00000100;
+const char COMMAND_RIGHT = 0b00001000;
 
 const size_t BYTE_COMMAND = 0;
 const size_t BYTE_STEERING_POWER = 1;
@@ -52,26 +52,30 @@ void setup() {
 	Serial.println("Starting: ...");
 }
 
-void loop() {  
-	char bytes[3];
-	int index = 0;
-
-	for(int index = 0; Bluetooth.available() > 0 && index < 3; index++) {
-		bytes[index] = Bluetooth.read();
-		if(index == 2) {
-			processData(bytes);
-			writeData(bytes);
-		}
-	}
+void loop() {
+  if(Bluetooth.available() > 0) {
+  	unsigned char bytes[3];
+  	int index = 0;
+    if (Bluetooth.readBytes(bytes, 3) == 3) {
+      processData(bytes);
+    }
+    writeData(bytes);
+  }
 
 	Bluetooth.flush();
 }
 
-void writeData(const char* const receivedBytes) {
-	Serial.println(receivedBytes);
+void writeData(const unsigned char* const receivedBytes) {
+  Serial.print("receivedBytes: ");
+  for(int index = 0; index < 3; index++) {
+    Serial.print(receivedBytes[index], BIN);
+    Serial.print(", ");
+  }
+  //Serial.print("receivedBytes:");
+	Serial.println("");
 }
 
-void processData(const char* const receivedBytes) {
+void processData(const unsigned char* const receivedBytes) {
 
 	if(receivedBytes[BYTE_COMMAND] & COMMAND_LEFT) {
 		arcc.left(receivedBytes[BYTE_STEERING_POWER]);

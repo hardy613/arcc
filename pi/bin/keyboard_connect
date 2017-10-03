@@ -1,0 +1,56 @@
+#!/usr/bin/env python3
+
+import curses
+import atexit
+from pi_master import ArdiunoClient
+
+
+client = ArdiunoClient()
+client.connect()
+client.steering_power = 200
+client.propulsion_power = 200
+
+def on_exit():
+    curses.nocbreak()
+    screen.keypad(False)
+    curses.echo()
+    curses.endwin()
+    client.left = False
+    client.right = False
+    client.forward = False
+    client.backward = False
+    client.send_state()
+    client.close()
+
+
+atexit.register(on_exit)
+
+screen = curses.initscr()
+curses.noecho()
+curses.cbreak()
+screen.keypad(True)
+screen.addstr('use arrow keys to move around (enter to exit)')
+
+while True:
+    event = screen.getch()
+    screen.clear()
+    if event == curses.KEY_RIGHT:
+        client.right = True
+        client.left = False
+    if event == curses.KEY_LEFT:
+        client.right = False
+        client.left = True
+    if event == curses.KEY_DOWN:
+        client.backward = True
+        client.forward = False
+    if event == curses.KEY_UP:
+        client.backward = False
+        client.forward = True
+
+    if event == curses.KEY_ENTER or event == -1 or event == 10 or event == 49:
+        on_exit()
+        atexit.unregister(on_exit)
+        break
+    else:
+        client.send_state()
+        screen.addstr(str(client))

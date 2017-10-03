@@ -1,16 +1,6 @@
 #include <SoftwareSerial.h>
 //my libraries
 #include "Arcc.h"
-/**
-	@file:  basic set up for blueTooth connection with my phone
-	I would like to add a WiiMote in the future
-	right now we are just reading the data we send it,
-	just need a steering wheel (hence wiimote).
-
-	@uses:  HC-06 Bluetooth Module - communication
-	Andriod phone (Nexus 5x) - steering wheel
-
- */
 //bluetooth connection
 const long baudRate = 9600;
 const int rxPin = 4; //bluetooth tx pin
@@ -24,7 +14,6 @@ const char COMMAND_FORWARD = 0b00000001;
 const char COMMAND_BACKWARD = 0b00000010;
 const char COMMAND_LEFT = 0b00000100;
 const char COMMAND_RIGHT = 0b00001000;
-
 const size_t BYTE_COMMAND = 0;
 const size_t BYTE_STEERING_POWER = 1;
 const size_t BYTE_PROPULSION_POWER = 2;
@@ -45,7 +34,6 @@ void setup() {
 	pinMode(bluetoothStatePin, INPUT);
 	pinMode(rxPin, INPUT);
 	pinMode(txPin, OUTPUT);
-  //arrc = Arcc();
 	//open communication
 	Serial.begin(baudRate);
 	Bluetooth.begin(baudRate);
@@ -61,7 +49,6 @@ void loop() {
     }
     writeData(bytes);
   }
-
 	Bluetooth.flush();
 }
 
@@ -71,7 +58,6 @@ void writeData(const unsigned char* const receivedBytes) {
     Serial.print(receivedBytes[index], BIN);
     Serial.print(", ");
   }
-  //Serial.print("receivedBytes:");
 	Serial.println("");
 }
 

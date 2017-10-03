@@ -1,10 +1,9 @@
 /*
 	 Arcc.cpp - Library for controller a RC Car.
-	 Created by Scott Hardy, May 15, 2016.
-	 */
+*/
 #include "Arduino.h"
 #include "Arcc.h"
-
+// pins
 const int STEERING_MOTOR_LEFT = 10; 
 const int STEERING_MOTOR_RIGHT = 9;  
 const int DRIVE_MOTOR_FORWARD = 5;     

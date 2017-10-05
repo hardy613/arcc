@@ -26,4 +26,4 @@ while True:
     # print "Buttons: ", wm.state['buttons']
     str_data = re.sub(r'[()\s+]*', "", str(wm.state["acc"]))
 
-    print("data: %s" % str_data)
+    print(wm.state)

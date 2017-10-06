@@ -22,7 +22,7 @@ class ArdiunoClient:
         self.steering_power = 0
         self.propulsion_power = 0
         self._socket = None
-        self._stub_bluetooth = os.environ.get('BLUETOOTH_STUB') != '1'
+        self._stub_bluetooth = os.environ.get('BLUETOOTH_STUB') == '1'
 
     def connect(self):
         if not self._stub_bluetooth:

@@ -59,7 +59,6 @@ class ArdiunoClient:
             self.propulsion_power = 0
 
         return bytes([command, self.steering_power, self.propulsion_power])
-    
 
     def send_state(self):
         if not self._stub_bluetooth:
